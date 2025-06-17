@@ -62,7 +62,7 @@
       <input type="text" id="projects-link" placeholder="Project Link" />
       <button onclick="handleEditOrAdd('projects')">Save</button>
     </div>
-    <div><ul id="projects-list"></ul></div>
+    <ul id="projects-list"></ul>
   </div>
 
   <div class="section" id="resources">
@@ -72,7 +72,7 @@
       <input type="text" id="resources-link" placeholder="Resource Link" />
       <button onclick="handleEditOrAdd('resources')">Save</button>
     </div>
-    <div><ul id="resources-list"></ul></div>
+    <ul id="resources-list"></ul>
   </div>
 
   <div class="section" id="notes">
@@ -82,7 +82,7 @@
       <input type="text" id="notes-link" placeholder="Note Link" />
       <button onclick="handleEditOrAdd('notes')">Save</button>
     </div>
-    <div><ul id="notes-list"></ul></div>
+    <ul id="notes-list"></ul>
   </div>
 
   <div class="section" id="experience">
@@ -92,7 +92,7 @@
       <input type="text" id="experience-link" placeholder="Link (optional)" />
       <button onclick="handleEditOrAdd('experience')">Save</button>
     </div>
-    <div><ul id="experience-list"></ul></div>
+    <ul id="experience-list"></ul>
   </div>
 
   <div class="section" id="files">
@@ -102,14 +102,91 @@
       <input type="text" id="files-link" placeholder="Google Drive Link" />
       <button onclick="handleEditOrAdd('files')">Save</button>
     </div>
-    <div><ul id="files-list"></ul></div>
+    <ul id="files-list"></ul>
   </div>
 
   <script>
     function toggleForm(section) {
-      const form = document.getElementById(`${section}-form`);
+  const form = document.getElementById(`${section}-form`);
+  if (form.style.display === "" || form.style.display === "none") {
+    form.style.display = "block";
+  } else {
+    form.style.display = "none";
+  }
+}-form`);
       form.style.display = form.style.display === "block" ? "none" : "block";
     }
 
     function addItem(section, isEdit = false, editIndex = -1) {
-      const nameEl = document.getEl
+      const nameEl = document.getElementById(`${section}-name`);
+      const linkEl = document.getElementById(`${section}-link`);
+      const name = nameEl.value;
+      const link = linkEl.value;
+      if (!name) return alert("Please enter a name");
+
+      const data = JSON.parse(localStorage.getItem(section)) || [];
+
+      if (isEdit && editIndex >= 0) {
+        data[editIndex] = { name, link, time: data[editIndex].time };
+      } else {
+        data.push({ name, link, time: new Date().toLocaleString() });
+      }
+
+      localStorage.setItem(section, JSON.stringify(data));
+      renderList(section);
+      nameEl.value = '';
+      linkEl.value = '';
+      nameEl.removeAttribute('data-edit-index');
+    }
+
+    function deleteItem(section, index) {
+      const data = JSON.parse(localStorage.getItem(section)) || [];
+      data.splice(index, 1);
+      localStorage.setItem(section, JSON.stringify(data));
+      renderList(section);
+    }
+
+    function editItem(section, index) {
+      const data = JSON.parse(localStorage.getItem(section)) || [];
+      const item = data[index];
+      const nameEl = document.getElementById(`${section}-name`);
+      const linkEl = document.getElementById(`${section}-link`);
+      nameEl.value = item.name;
+      linkEl.value = item.link || '';
+      document.getElementById(`${section}-form`).style.display = 'block';
+      nameEl.setAttribute('data-edit-index', index);
+    }
+
+    function handleEditOrAdd(section) {
+      const nameEl = document.getElementById(`${section}-name`);
+      const editIndex = nameEl.getAttribute('data-edit-index');
+      if (editIndex !== null) {
+        addItem(section, true, parseInt(editIndex));
+      } else {
+        addItem(section);
+      }
+    }
+
+    function renderList(section) {
+      const list = document.getElementById(`${section}-list`);
+      list.innerHTML = "";
+      const data = JSON.parse(localStorage.getItem(section)) || [];
+      data.forEach((item, index) => {
+        const li = document.createElement('li');
+        const linkHTML = item.link ? `<a href="${item.link}" target="_blank">${item.name}</a>` : item.name;
+        li.innerHTML = `${linkHTML} <span style="color:gray;font-size: 12px;">(${item.time})</span>
+          <button onclick="editItem('${section}', ${index})" style="margin-left:10px;">✏️</button>
+          <button onclick="deleteItem('${section}', ${index})" style="margin-left:5px;color:red;">❌</button>`;
+        list.appendChild(li);
+      });
+    }
+
+    function loadItems() {
+      ['projects', 'resources', 'notes', 'experience', 'files'].forEach(renderList);
+    }
+
+    loadItems();
+  </script>
+</body>
+</html>
+
