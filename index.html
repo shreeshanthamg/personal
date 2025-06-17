@@ -1,16 +1,13 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>My Learning Hub</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Personal Resource Hub</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f9fafc;
-      margin: 0;
+      background: #f9f9f9;
       padding: 20px;
       max-width: 800px;
       margin: auto;
@@ -19,88 +16,93 @@
       text-align: center;
     }
     .section {
-      background: white;
-      padding: 20px;
-      margin-bottom: 30px;
+      background: #fff;
+      border: 1px solid #ddd;
       border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      padding: 15px;
+      margin-bottom: 20px;
     }
     .section h2 {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .add-form {
-      display: none;
-      margin-top: 10px;
-    }
-    .add-form input {
-      width: 48%;
-      padding: 8px;
-      margin-bottom: 10px;
-    }
-    .add-form button {
-      padding: 6px 12px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-    }
-    .item-list ul {
-      padding-left: 20px;
-    }
-    .item-list li {
-      margin: 6px 0;
+      margin-top: 0;
     }
     .add-button {
+      float: right;
       cursor: pointer;
-      font-size: 20px;
-      color: #007bff;
+      color: green;
+      font-size: 24px;
+    }
+    .add-form {
+      margin-top: 10px;
+      display: none;
+    }
+    .add-form input {
+      padding: 5px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+      width: 45%;
+    }
+    .add-form button {
+      padding: 5px 10px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 8px;
     }
   </style>
 </head>
 <body>
-
-  <h1>📘 My Learning Hub</h1>
+  <h1>📚 My Personal Hub</h1>
 
   <div class="section" id="projects">
     <h2>📁 Projects <span class="add-button" onclick="toggleForm('projects')">+</span></h2>
     <div class="add-form" id="projects-form">
       <input type="text" id="projects-name" placeholder="Project Name" />
       <input type="text" id="projects-link" placeholder="Project Link" />
-      <button onclick="addItem('projects')">Add</button>
+      <button onclick="handleEditOrAdd('projects')">Save</button>
     </div>
-    <div class="item-list"><ul id="projects-list"></ul></div>
+    <div><ul id="projects-list"></ul></div>
   </div>
 
   <div class="section" id="resources">
-    <h2>📚 Resources <span class="add-button" onclick="toggleForm('resources')">+</span></h2>
+    <h2>🔗 Resources <span class="add-button" onclick="toggleForm('resources')">+</span></h2>
     <div class="add-form" id="resources-form">
       <input type="text" id="resources-name" placeholder="Resource Name" />
       <input type="text" id="resources-link" placeholder="Resource Link" />
-      <button onclick="addItem('resources')">Add</button>
+      <button onclick="handleEditOrAdd('resources')">Save</button>
     </div>
-    <div class="item-list"><ul id="resources-list"></ul></div>
+    <div><ul id="resources-list"></ul></div>
   </div>
 
   <div class="section" id="notes">
-    <h2>🧠 Notes <span class="add-button" onclick="toggleForm('notes')">+</span></h2>
+    <h2>📝 Notes <span class="add-button" onclick="toggleForm('notes')">+</span></h2>
     <div class="add-form" id="notes-form">
       <input type="text" id="notes-name" placeholder="Note Title" />
       <input type="text" id="notes-link" placeholder="Note Link" />
-      <button onclick="addItem('notes')">Add</button>
+      <button onclick="handleEditOrAdd('notes')">Save</button>
     </div>
-    <div class="item-list"><ul id="notes-list"></ul></div>
+    <div><ul id="notes-list"></ul></div>
   </div>
 
   <div class="section" id="experience">
-    <h2>📝 My Experience <span class="add-button" onclick="toggleForm('experience')">+</span></h2>
+    <h2>🧠 My Experience <span class="add-button" onclick="toggleForm('experience')">+</span></h2>
     <div class="add-form" id="experience-form">
       <input type="text" id="experience-name" placeholder="Title" />
       <input type="text" id="experience-link" placeholder="Link (optional)" />
-      <button onclick="addItem('experience')">Add</button>
+      <button onclick="handleEditOrAdd('experience')">Save</button>
     </div>
-    <div class="item-list"><ul id="experience-list"></ul></div>
+    <div><ul id="experience-list"></ul></div>
+  </div>
+
+  <div class="section" id="files">
+    <h2>📎 Uploaded Files <span class="add-button" onclick="toggleForm('files')">+</span></h2>
+    <div class="add-form" id="files-form">
+      <input type="text" id="files-name" placeholder="File Name" />
+      <input type="text" id="files-link" placeholder="Google Drive Link" />
+      <button onclick="handleEditOrAdd('files')">Save</button>
+    </div>
+    <div><ul id="files-list"></ul></div>
   </div>
 
   <script>
@@ -109,51 +111,5 @@
       form.style.display = form.style.display === "block" ? "none" : "block";
     }
 
-    function addItem(section) {
-      const name = document.getElementById(`${section}-name`).value;
-      const link = document.getElementById(`${section}-link`).value;
-      if (!name) return alert("Please enter a name");
-
-      const list = document.getElementById(`${section}-list`);
-      const li = document.createElement('li');
-      if (link) {
-        li.innerHTML = `<a href="${link}" target="_blank">${name}</a>`;
-      } else {
-        li.textContent = name;
-      }
-      list.appendChild(li);
-
-      saveItem(section, name, link);
-
-      // Clear inputs
-      document.getElementById(`${section}-name`).value = '';
-      document.getElementById(`${section}-link`).value = '';
-    }
-
-    function saveItem(section, name, link) {
-      const data = JSON.parse(localStorage.getItem(section)) || [];
-      data.push({ name, link });
-      localStorage.setItem(section, JSON.stringify(data));
-    }
-
-    function loadItems() {
-      ['projects', 'resources', 'notes', 'experience'].forEach(section => {
-        const data = JSON.parse(localStorage.getItem(section)) || [];
-        const list = document.getElementById(`${section}-list`);
-        data.forEach(item => {
-          const li = document.createElement('li');
-          if (item.link) {
-            li.innerHTML = `<a href="${item.link}" target="_blank">${item.name}</a>`;
-          } else {
-            li.textContent = item.name;
-          }
-          list.appendChild(li);
-        });
-      });
-    }
-
-    loadItems();
-  </script>
-
-</body>
-</html>
+    function addItem(section, isEdit = false, editIndex = -1) {
+      const nameEl = document.getEl
